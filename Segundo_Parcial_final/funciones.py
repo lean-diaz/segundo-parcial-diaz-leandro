@@ -1,5 +1,124 @@
 import random
 
+import json
+
+
+def obtener_mejores_puntajes(puntajes_json):
+    """
+    Obtiene los tres mejores puntajes ordenados de mayor a menor.
+    """
+    with open(puntajes_json, 'r') as archivo:
+        puntajes = json.load(archivo)
+
+    mejores_puntajes = []
+
+    # Procesar los datos de forma algorítmica
+    for elemento in puntajes:
+        if isinstance(elemento, dict):  # Verificar que sea un diccionario
+            if "nickname" in elemento and "puntaje" in elemento:  # Asegurarse de usar 'nickname'
+                mejores_puntajes.append(elemento)
+
+    # Ordenar los puntajes de forma algorítmica
+    for i in range(len(mejores_puntajes)):
+        for j in range(len(mejores_puntajes) - i - 1):
+            if mejores_puntajes[j]["puntaje"] < mejores_puntajes[j + 1]["puntaje"]:
+                mejores_puntajes[j], mejores_puntajes[j + 1] = mejores_puntajes[j + 1], mejores_puntajes[j]
+
+    # Retornar los tres mejores puntajes
+    return mejores_puntajes[:3]
+
+
+def guardar_puntaje(archivo, nickname, puntaje):
+    """
+    Guarda el puntaje del jugador en un archivo JSON.
+    
+    Parámetros:
+    - archivo: Ruta del archivo donde se almacenarán los puntajes.
+    - nickname: Nombre del jugador.
+    - puntaje: Puntaje del jugador.
+    
+    """
+    datos = []
+    
+    # Intentar leer el archivo existente
+    try:
+        with open(archivo, "r") as f:
+            contenido = f.read()
+            if contenido.strip():  # Verificar si no está vacío
+                datos = json.loads(contenido)
+            else:
+                datos = []  # Inicializar como lista vacía si está vacío
+    except FileNotFoundError:
+        pass
+
+    # Agregar nuevo puntaje
+    datos.append({"nickname": nickname, "puntaje": puntaje})
+
+    # Guardar datos actualizados
+    with open(archivo, "w") as f:
+        json.dump(datos, f, indent=4)
+
+
+
+
+
+
+def pedir_nickname():
+    """
+    Solicita el nickname del jugador mediante consola.
+    
+    Retorna:
+    - str: Nickname ingresado por el jugador.
+    """
+    nickname = input("Por favor, ingresa tu nickname: ").strip()
+    return nickname
+
+def guardar_puntaje(archivo, nickname, puntaje):
+    """
+    Guarda el puntaje del jugador en un archivo JSON.
+    
+    Parámetros:
+    - archivo: Ruta del archivo donde se almacenarán los puntajes.
+    - nickname: Nombre del jugador.
+    - puntaje: Puntaje del jugador.
+    
+    """
+    datos = []
+    
+    # Intentar leer el archivo existente
+    try:
+        with open(archivo, "r") as f:
+            datos = json.load(f)
+    except FileNotFoundError:
+        pass
+
+    # Agregar nuevo puntaje
+    datos.append({"nickname": nickname, "puntaje": puntaje})
+
+    # Guardar datos actualizados
+    with open(archivo, "w") as f:
+        json.dump(datos, f, indent=4)
+
+def obtener_puntajes(archivo):
+    """
+    Obtiene la lista de puntajes desde un archivo JSON.
+    
+    Parámetros:
+    - archivo: Ruta del archivo desde donde se leerán los puntajes.
+    
+    Retorna:
+    - list: Lista de puntajes (diccionarios con nickname y puntaje).
+    """
+    try:
+        with open(archivo, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+
+
+
+
 def obtener_datos_tablero(tablero: list):
     """ 
     Convierte el tablero en una lista de diccionarios que describe las casillas del tablero con su fila, columna y estado
@@ -131,8 +250,7 @@ def colocar_nave(tablero: list, fila: int, columna: int, longitud: int, orientac
             # Marcamos la casilla como ocupada
             tablero[fila + desplazamiento][columna] = 1
 
-# Generar un tablero con naves aleatorias
-def generar_tablero_con_naves(tamano:int = 10):
+def generar_tablero_con_naves(tamano: int = 10):
     """
     Genera un tablero con naves colocadas aleatoriamente.
     
@@ -142,16 +260,15 @@ def generar_tablero_con_naves(tamano:int = 10):
     Retorna:
     - list: Una lista de listas que representa el tablero con las naves colocadas.
     """
-    
-    # Creamos un tablero vacio
+    # Creamos un tablero vacío
     tablero = crear_tablero_vacio(tamano)
     
-    # Lista de longitudes de las naves a colocar
-    naves = [4,3,2,1]
+    # Lista de longitudes de las naves a colocar (2 de cada tipo)
+    naves = [4, 4, 3, 3, 2, 2, 1, 1]
     
     # Iteramos sobre cada nave para colocarla en el tablero
     for nave in naves:
-        # Indicamos que aun no hemos colocado la nave
+        # Indicamos que aún no hemos colocado la nave
         nave_colocada = False
         
         # Intentamos colocar la nave hasta que se pueda
@@ -161,8 +278,8 @@ def generar_tablero_con_naves(tamano:int = 10):
             # Generamos una columna aleatoria
             columna = random.randint(0, tamano - 1)
             
-            # Decidimos la orientacion
-            if random.randint(0,1) == 0:
+            # Decidimos la orientación
+            if random.randint(0, 1) == 0:
                 orientacion = "horizontal"
             else:
                 orientacion = "vertical"
@@ -174,9 +291,32 @@ def generar_tablero_con_naves(tamano:int = 10):
                 # Marcamos que la nave fue colocada 
                 nave_colocada = True
     
-    # Retornamos el tablero  generado
+    # Retornamos el tablero generado
     return tablero
 
+def verificar_hundimiento(tablero, fila, columna):
+    """
+    Verifica si la nave fue hundida completamente al disparar en la posición dada.
+    
+    Parámetros:
+    - tablero: La matriz que representa el tablero.
+    - fila: Fila del disparo actual.
+    - columna: Columna del disparo actual.
+    
+    Retorna:
+    - int: Número de partes de la nave hundida o 0 si no se hundió.
+    """
+    partes_hundidas = 0
+    # Verificar horizontalmente
+    for c in range(len(tablero[0])):
+        if tablero[fila][c] == 1:  # Parte de la nave
+            partes_hundidas += 1
+    
+    # Verificar verticalmente
+    for f in range(len(tablero)):
+        if tablero[f][columna] == 1:  # Parte de la nave
+            partes_hundidas += 1
 
+    return partes_hundidas
 
 
