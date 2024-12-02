@@ -6,24 +6,24 @@ def obtener_mejores_puntajes(puntajes_json):
     """
     Obtiene los tres mejores puntajes ordenados de mayor a menor.
     """
+    # Abrimos el archivo JSON en modo lectura
     with open(puntajes_json, 'r') as archivo:
-        puntajes = json.load(archivo)
+        puntajes = json.load(archivo)  # Cargamos los datos del archivo como una lista de diccionarios
 
     # Crear una lista para guardar puntajes válidos
     mejores_puntajes = []
 
     # Revisar cada elemento de los puntajes
-    for elemento in puntajes:
-        # Agregar solo si tiene nickname y puntaje
+    for elemento in puntajes:  # Iteramos por cada entrada en la lista de puntajes
+        # Verificamos que cada elemento tenga las claves "nickname" y "puntaje"
         if "nickname" in elemento and "puntaje" in elemento:
-            mejores_puntajes.append(elemento)
+            mejores_puntajes.append(elemento)  # Agregamos el elemento válido a la lista
 
     # Ordenar los puntajes de mayor a menor
-    mejores_puntajes.sort(key=lambda x: x["puntaje"], reverse=True)
+    mejores_puntajes.sort(key=lambda x: x["puntaje"], reverse=True)  # Ordenamos por el valor de la clave "puntaje"
 
     # Devolver solo los tres primeros
-    return mejores_puntajes[:3]
-
+    return mejores_puntajes[:3]  # Retornamos los tres mejores puntajes
 
 def guardar_puntaje(archivo, nickname, puntaje):
     """
@@ -33,22 +33,17 @@ def guardar_puntaje(archivo, nickname, puntaje):
     - archivo: Ruta del archivo donde se almacenarán los puntajes.
     - nickname: Nombre del jugador.
     - puntaje: Puntaje del jugador.
-    
     """
     # Leer el archivo existente
     with open(archivo, "r") as f:
-        datos = json.load(f)
+        datos = json.load(f)  # Cargamos los datos existentes como una lista de diccionarios
 
     # Agregar nuevo puntaje
-    datos.append({"nickname": nickname, "puntaje": puntaje})
+    datos.append({"nickname": nickname, "puntaje": puntaje})  # Añadimos un nuevo diccionario con los datos del jugador
 
     # Guardar datos actualizados
-    with open(archivo, "w") as f:
-        json.dump(datos, f, indent=4)
-
-
-
-
+    with open(archivo, "w") as f:  # Abrimos el archivo en modo escritura
+        json.dump(datos, f, indent=4)  # Escribimos la lista actualizada en formato JSON con sangría para mayor legibilidad
 
 def pedir_nickname():
     """
@@ -60,7 +55,6 @@ def pedir_nickname():
     nickname = input("Por favor, ingresa tu nickname: ")
     return nickname
 
-
 def obtener_puntajes(archivo):
     """
     Obtiene la lista de puntajes desde un archivo JSON.
@@ -71,15 +65,12 @@ def obtener_puntajes(archivo):
     Retorna:
     - list: Lista de puntajes (diccionarios con nickname y puntaje).
     """
-    try:
-        with open(archivo, "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return []
-
-
-
-
+    # Abrimos el archivo JSON en modo lectura
+    with open(archivo, "r") as f:
+        puntajes = json.load(f)  # Cargamos los datos del archivo como una lista de diccionarios
+    
+    # Retornamos los puntajes cargados
+    return puntajes
 
 def obtener_datos_tablero(tablero: list):
     """ 
