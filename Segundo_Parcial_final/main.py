@@ -11,7 +11,8 @@ pygame.init()
 
 # Colores y configuraciones gráficas
 COLOR_AGUA = (0, 128, 255)  # Azul
-COLOR_NAVE = (255, 0, 0)  # Rojo
+COLOR_NAVE_OCULTA = (0, 128, 255)  # Azul (mismo que agua para ocultar)
+COLOR_NAVE_DESCUBIERTA = (255, 0, 0)  # Rojo
 COLOR_BOTON = (0, 128, 255)  # Azul Claro
 COLOR_TEXTO = (255, 255, 255)  # Blanco
 TAMANIO_CASILLA = 50
@@ -19,7 +20,7 @@ MARGEN_TABLERO = 100
 fuente = pygame.font.SysFont("Arial", 30)
 
 # Imagen de fondo
-imagen_fondo = pygame.image.load("img/fondo.jpeg")
+imagen_fondo = pygame.image.load("Segundo_Parcial_final/img/fondo.jpeg")
 imagen_fondo = pygame.transform.scale(imagen_fondo, (ANCHO_PANTALLA, ALTO_PANTALLA))
 
 # Botones
@@ -41,6 +42,7 @@ puntajes_json = "puntajes.json"
 corriendo = True
 tablero = None
 disparos_realizados = []
+estado_casillas = None
 puntaje = 0
 
 # Bucle principal del juego
@@ -63,17 +65,22 @@ while corriendo:
                     juego_activo = False
                     mostrar_reiniciar = False
                     mostrar_volver = False
-            
+
                     # Solicitar nickname
                     nickname = pedir_nickname()
 
                     # Inicializar tablero y juego
                     tablero = generar_tablero_con_naves()
+                    
+                    # Inicializar estado de casillas
+                    estado_casillas = [[False for _ in range(10)] for _ in range(10)]
+                    
                     menu_activo = False
                     juego_activo = True
                     mostrar_reiniciar = True
                     mostrar_volver = True
                     puntaje = 0  # Puntaje inicial
+                    disparos_realizados.clear()
                     print(f"Se presionó 'Jugar'. Nickname: {nickname}")
 
                 # Botón Ver Puntajes
@@ -88,7 +95,6 @@ while corriendo:
                     for i in range(len(mejores_puntajes)):
                         print(f"{i + 1}. Nick: {mejores_puntajes[i]['nickname']}, Puntaje: {mejores_puntajes[i]['puntaje']}")
                     
-                    
                 # Boton Salir
                 elif botones["salir"].collidepoint((mouse_x, mouse_y)):
                     corriendo = False
@@ -99,6 +105,7 @@ while corriendo:
                 # Boton Reiniciar
                 if botones["reiniciar"].collidepoint((mouse_x, mouse_y)):
                     tablero = generar_tablero_con_naves()
+                    estado_casillas = [[False for _ in range(10)] for _ in range(10)]
                     disparos_realizados.clear()
                     puntaje = 0
                     print("Se presionó 'Reiniciar'")
@@ -114,6 +121,7 @@ while corriendo:
                     mostrar_reiniciar = False
                     mostrar_volver = False
                     tablero = None
+                    estado_casillas = None
                     disparos_realizados.clear()
                     puntaje = 0
                     print("Se presionó 'Volver'")
@@ -138,6 +146,8 @@ while corriendo:
                         if ya_disparo:
                             print("Ya disparaste aquí.")
                         else:
+                            # Marcar la casilla como disparada
+                            estado_casillas[fila][columna] = True
                             # Agregar el disparo a la lista de disparos realizados
                             disparos_realizados.append(disparo)
 
@@ -164,20 +174,21 @@ while corriendo:
             pantalla.blit(texto_boton, rect_texto)
 
     elif juego_activo:  # Dibujar el juego
-        if tablero:
+        if tablero and estado_casillas:
             for fila in range(len(tablero)):
                 for columna in range(len(tablero[fila])):
                     x = MARGEN_TABLERO + columna * TAMANIO_CASILLA
                     y = MARGEN_TABLERO + fila * TAMANIO_CASILLA
                 
                     # Determinar el color basado en el estado del disparo
-                    if (fila, columna) in disparos_realizados:
-                        color = (255, 255, 0)  # Color para casillas disparadas
-                    else:
-                        if tablero[fila][columna] == 0:
-                            color = COLOR_AGUA  # Agua
+                    if estado_casillas[fila][columna]:
+                        # Si la casilla ya fue disparada
+                        if tablero[fila][columna] == 1:
+                            color = COLOR_NAVE_DESCUBIERTA  # Rojo para nave descubierta
                         else:
-                            color = COLOR_NAVE  # Nave
+                            color = (255, 255, 0)  # Amarillo para agua
+                    else:
+                        color = COLOR_NAVE_OCULTA  # Azul para casillas no descubiertas
 
                     pygame.draw.rect(pantalla, color, (x, y, TAMANIO_CASILLA, TAMANIO_CASILLA))
                     pygame.draw.rect(pantalla, (0, 0, 0), (x, y, TAMANIO_CASILLA, TAMANIO_CASILLA), 2)
@@ -198,8 +209,6 @@ while corriendo:
                 texto_volver = fuente.render("Volver", True, COLOR_TEXTO)
                 rect_volver = texto_volver.get_rect(center=botones["volver"].center)
                 pantalla.blit(texto_volver, rect_volver)
-
-
 
     pygame.display.flip()
 

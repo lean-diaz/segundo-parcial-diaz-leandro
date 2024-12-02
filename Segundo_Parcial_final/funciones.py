@@ -1,5 +1,4 @@
 import random
-
 import json
 
 
@@ -10,21 +9,19 @@ def obtener_mejores_puntajes(puntajes_json):
     with open(puntajes_json, 'r') as archivo:
         puntajes = json.load(archivo)
 
+    # Crear una lista para guardar puntajes válidos
     mejores_puntajes = []
 
-    # Procesar los datos de forma algorítmica
+    # Revisar cada elemento de los puntajes
     for elemento in puntajes:
-        if isinstance(elemento, dict):  # Verificar que sea un diccionario
-            if "nickname" in elemento and "puntaje" in elemento:  # Asegurarse de usar 'nickname'
-                mejores_puntajes.append(elemento)
+        # Agregar solo si tiene nickname y puntaje
+        if "nickname" in elemento and "puntaje" in elemento:
+            mejores_puntajes.append(elemento)
 
-    # Ordenar los puntajes de forma algorítmica
-    for i in range(len(mejores_puntajes)):
-        for j in range(len(mejores_puntajes) - i - 1):
-            if mejores_puntajes[j]["puntaje"] < mejores_puntajes[j + 1]["puntaje"]:
-                mejores_puntajes[j], mejores_puntajes[j + 1] = mejores_puntajes[j + 1], mejores_puntajes[j]
+    # Ordenar los puntajes de mayor a menor
+    mejores_puntajes.sort(key=lambda x: x["puntaje"], reverse=True)
 
-    # Retornar los tres mejores puntajes
+    # Devolver solo los tres primeros
     return mejores_puntajes[:3]
 
 
@@ -38,18 +35,9 @@ def guardar_puntaje(archivo, nickname, puntaje):
     - puntaje: Puntaje del jugador.
     
     """
-    datos = []
-    
-    # Intentar leer el archivo existente
-    try:
-        with open(archivo, "r") as f:
-            contenido = f.read()
-            if contenido.strip():  # Verificar si no está vacío
-                datos = json.loads(contenido)
-            else:
-                datos = []  # Inicializar como lista vacía si está vacío
-    except FileNotFoundError:
-        pass
+    # Leer el archivo existente
+    with open(archivo, "r") as f:
+        datos = json.load(f)
 
     # Agregar nuevo puntaje
     datos.append({"nickname": nickname, "puntaje": puntaje})
@@ -57,7 +45,6 @@ def guardar_puntaje(archivo, nickname, puntaje):
     # Guardar datos actualizados
     with open(archivo, "w") as f:
         json.dump(datos, f, indent=4)
-
 
 
 
@@ -70,34 +57,9 @@ def pedir_nickname():
     Retorna:
     - str: Nickname ingresado por el jugador.
     """
-    nickname = input("Por favor, ingresa tu nickname: ").strip()
+    nickname = input("Por favor, ingresa tu nickname: ")
     return nickname
 
-def guardar_puntaje(archivo, nickname, puntaje):
-    """
-    Guarda el puntaje del jugador en un archivo JSON.
-    
-    Parámetros:
-    - archivo: Ruta del archivo donde se almacenarán los puntajes.
-    - nickname: Nombre del jugador.
-    - puntaje: Puntaje del jugador.
-    
-    """
-    datos = []
-    
-    # Intentar leer el archivo existente
-    try:
-        with open(archivo, "r") as f:
-            datos = json.load(f)
-    except FileNotFoundError:
-        pass
-
-    # Agregar nuevo puntaje
-    datos.append({"nickname": nickname, "puntaje": puntaje})
-
-    # Guardar datos actualizados
-    with open(archivo, "w") as f:
-        json.dump(datos, f, indent=4)
 
 def obtener_puntajes(archivo):
     """
