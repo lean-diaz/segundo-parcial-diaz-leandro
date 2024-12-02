@@ -42,7 +42,15 @@ puntajes_json = "puntajes.json"
 corriendo = True
 tablero = None
 disparos_realizados = []
-estado_casillas = None
+
+# Inicializar estado de casillas de manera más legible
+estado_casillas = []
+for fila in range(10):
+    nueva_fila = []
+    for columna in range(10):
+        nueva_fila.append(False)
+    estado_casillas.append(nueva_fila)
+
 puntaje = 0
 
 # Bucle principal del juego
@@ -72,8 +80,13 @@ while corriendo:
                     # Inicializar tablero y juego
                     tablero = generar_tablero_con_naves()
                     
-                    # Inicializar estado de casillas
-                    estado_casillas = [[False for _ in range(10)] for _ in range(10)]
+                    # Inicializar estado de casillas de manera más legible
+                    estado_casillas = []
+                    for fila in range(10):
+                        nueva_fila = []
+                        for columna in range(10):
+                            nueva_fila.append(False)
+                        estado_casillas.append(nueva_fila)
                     
                     menu_activo = False
                     juego_activo = True
@@ -105,7 +118,15 @@ while corriendo:
                 # Boton Reiniciar
                 if botones["reiniciar"].collidepoint((mouse_x, mouse_y)):
                     tablero = generar_tablero_con_naves()
-                    estado_casillas = [[False for _ in range(10)] for _ in range(10)]
+                    
+                    # Inicializar estado de casillas de manera más legible
+                    estado_casillas = []
+                    for fila in range(10):
+                        nueva_fila = []
+                        for columna in range(10):
+                            nueva_fila.append(False)
+                        estado_casillas.append(nueva_fila)
+                    
                     disparos_realizados.clear()
                     puntaje = 0
                     print("Se presionó 'Reiniciar'")
