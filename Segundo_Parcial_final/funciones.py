@@ -1,7 +1,6 @@
 import random
 import json
 
-
 def obtener_mejores_puntajes(puntajes_json):
     """
     Obtiene los tres mejores puntajes ordenados de mayor a menor.
@@ -112,7 +111,6 @@ def obtener_datos_tablero(tablero: list):
     
     return datos
 
-# Crear un tablero vacio
 def crear_tablero_vacio(tamano:int = 10):
     """ 
     Crea y retorna un tablero vacio representado como una matriz de 0
@@ -142,7 +140,6 @@ def crear_tablero_vacio(tamano:int = 10):
     # Retornamos el tablero completo
     return tablero
 
-# Verificar si se puede colocar una nave
 def puede_colocar_nave(tablero: list, fila: int, columna: int, longitud: int, orientacion: str):
     """
     Verifica si es posible colocar una nave en una posición específica del tablero.
@@ -177,7 +174,6 @@ def puede_colocar_nave(tablero: list, fila: int, columna: int, longitud: int, or
     # Retornamos el estado final
     return se_puede_colocar
 
-# Colocar una nave en el tablero
 def colocar_nave(tablero: list, fila: int, columna: int, longitud: int, orientacion: str):
     """ 
     Coloca una nave en una posicion especifica del tablero
@@ -271,9 +267,6 @@ def verificar_hundimiento(tablero, fila, columna):
             partes_hundidas += 1
 
     return partes_hundidas
-
-
-
 
 def inicializar_estado_casillas(filas=10, columnas=10):
     """
