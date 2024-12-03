@@ -1,6 +1,6 @@
 # Importamos Pygame y las funciones
 import pygame
-from funciones import *  # Asegúrate de que funciones.py contiene las funciones necesarias como generar_tablero_con_naves.
+from funciones import *
 
 # Configuramos la pantalla
 ANCHO_PANTALLA = 800
@@ -45,13 +45,8 @@ corriendo = True # Controla el bucle principal del juego
 tablero = None # Representación del tablero (matriz)
 disparos_realizados = [] # Lista de disparos realizados por el jugador
 
-# Inicializamos el estado de las casillas 
-estado_casillas = [] 
-for fila in range(10): # Iteramos sobre las filas del tablero
-    nueva_fila = []
-    for columna in range(10): # Iteramos  sobre las filas del tablero
-        nueva_fila.append(False) # Cada casilla se inicializa como No Disparada (False)
-    estado_casillas.append(nueva_fila) # Agregamos la fila al estado del tablero
+# Inicializamos el estado de las casillas
+estado_casillas = inicializar_estado_casillas()
 
 puntaje = 0 # Puntaje inicial del jugador
 
@@ -92,15 +87,8 @@ while corriendo:
                     # Inicializar tablero y juego
                     tablero = generar_tablero_con_naves() # Generamos un tablero con naves ubicadas aleatoriamente
                     
-                    # Inicializar estado de casillas de manera más legible
-                    estado_casillas = [] # Creamos una lista vacia para almacenar el estado de cada casilla
-                    # Iteramos sobre las 10 filas del tablero
-                    for fila in range(10): 
-                        nueva_fila = [] # Creamos una nueva fila vacia
-                        # Iteramos sobre las 10 columnas del tablero
-                        for columna in range(10): 
-                            nueva_fila.append(False) # Inicializamos cada casilla como No Disparada (False)
-                        estado_casillas.append(nueva_fila) # Agregamos la fila completa al estado del tablero
+                    # Inicializamos el estado de las casillas
+                    estado_casillas = inicializar_estado_casillas()
                     
                     # Cambiar estados para activar el juego
                     menu_activo = False # Desactivamos el menu principal
@@ -134,15 +122,8 @@ while corriendo:
                 if botones["reiniciar"].collidepoint((mouse_x, mouse_y)): # Boton Reiniciar
                     tablero = generar_tablero_con_naves() # Generamos un nuevo tablero con las naves reposicionadas
                     
-                    # Inicializar estado de casillas de manera más legible
-                    estado_casillas = [] # Lista vacia para representar las casillas disparadas
-                    # Iteramos 10 veces, una para cada fila
-                    for fila in range(10): 
-                        nueva_fila = [] # Creamos una nueva fila vacia
-                        # Iteramos 10 veces, una para cada columna de la fila
-                        for columna in range(10): 
-                            nueva_fila.append(False) # Inicializamos cada casilla como No Disparada (False)
-                        estado_casillas.append(nueva_fila) # Añadimos la fila completa a la lista principal
+                    # Inicializamos el estado de las casillas
+                    estado_casillas = inicializar_estado_casillas()
                     
                     disparos_realizados.clear() # Limpiamos la lista de disparos realizados
                     puntaje = 0 # Reiniciamos el puntaje a 0

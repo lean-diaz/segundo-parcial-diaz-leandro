@@ -19,8 +19,8 @@ def obtener_mejores_puntajes(puntajes_json):
         if "nickname" in elemento and "puntaje" in elemento:
             mejores_puntajes.append(elemento)  # Agregamos el elemento válido a la lista
 
-    # Ordenar los puntajes de mayor a menor
-    mejores_puntajes.sort(key=lambda x: x["puntaje"], reverse=True)  # Ordenamos por el valor de la clave "puntaje"
+    # Ordenar los puntajes de mayor a menor por el valor de la clave "puntaje"
+    mejores_puntajes.sort(key=lambda x: x["puntaje"], reverse=True)
 
     # Devolver solo los tres primeros
     return mejores_puntajes[:3]  # Retornamos los tres mejores puntajes
@@ -271,5 +271,25 @@ def verificar_hundimiento(tablero, fila, columna):
             partes_hundidas += 1
 
     return partes_hundidas
+
+
+
+
+def inicializar_estado_casillas(filas=10, columnas=10):
+    """
+    Inicializa un tablero de estado de casillas.
+    
+    Parametros:
+        filas (int): Número de filas del tablero
+        columnas (int): Número de columnas del tablero
+    
+    Retorna:
+        list: Una matriz 2D donde todas las casillas están inicialmente sin disparar (False)
+    """
+    estado_casillas = []
+    for _ in range(filas):
+        nueva_fila = [False] * columnas
+        estado_casillas.append(nueva_fila)
+    return estado_casillas
 
 
